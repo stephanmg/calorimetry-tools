@@ -5,13 +5,11 @@ params={
 'q': 'gene_symbol:Ucp1 AND significant:True',
 'fl': 'gene_accession_id,parameter_name,id,weight,metadata'
 }
-#num_found, df = batch_solr_request(core='experiment', params=params, download=True, batch_size=100)
 
 to_find="Carbon dioxide production"
 # parameter stable ID is IMPC_CAL_004_001
 to_find="Oxygen consumption"
 # parameter stable ID is IMPC_CAL_003_001
-#to_find="Total food intake"
 
 params={
 'q': f'marker_symbol:Ucp1 AND procedure_name:"Indirect Calorimetry" AND parameter_name:"{to_find}" AND significant:False',
@@ -20,21 +18,19 @@ params={
 batch_solr_request(core='statistical-result', params=params, download=True, batch_size=100)
 
 
-# Note: the fields here are the fields from the sheets we can download for food intake, carbon dioxide, etc.
-# First we find colony id above, from the statistical result panel, this is then used to find associated experiments
+# Note: the fields here are the fields from the sheets we can download for example oxygen consumption, carbon dioxide production, etc.
+# First we find colony id above, from the statistical result panel. This ID is then used to find associated experiments. One can also use the metadata_group as ID.
 params={
 #'q': f'colony_id:HMGU-HEPD0676_4_E07-1-1 AND parameter_name:"{to_find}"',
 #'q': f'parameter_name:"{to_find}" AND metadata_group:593a2d0df1def577e4a39c6de7075687 AND zygosity: "homozygote" AND -gene_symbol:* AND parameter_stable_id:IMPC_CAL_004_001 AND strain_name:"C57BL/6NTac" AND biological_sample_group: "control"', # for control of specific gene
 'q': f'parameter_name:"{to_find}" AND metadata_group:593a2d0df1def577e4a39c6de7075687 AND zygosity: "homozygote" AND gene_symbol:Ucp1 AND parameter_stable_id:IMPC_CAL_003_001 AND strain_name:"C57BL/6NTac" AND biological_sample_group: "experimental"', # for knockout of specific gene
 #'q': f'metadata_group:593a2d0df1def577e4a39c6de7075687 AND parameter_name:"{to_find}" AND procedure_name:"Indirect Calorimetry"',
 'fl': 'weight,file_type,data_point,external_sample_id,time_point,window_weight,discrete_point,strain_name,metadata_group,parameter_stable_id,gene_symbol',
-'rows': 15000,
+'rows': 15000, # ignored in batch_solr_request
 'wt': 'csv'
 }
 
-#num_found, df = batch_solr_request(core='experiment', params=params, download=True, batch_size=200)
-#num_res, res = solr_request(core='experiment', params=params)
-batch_solr_request(core='experiment', params=params, download=True, batch_size=100, filename='UCP1_knockouts_O2')
+batch_solr_request(core='experiment', params=params, download=True, batch_size=10000, filename='UCP1_knockouts_O2')
 
 params={
 #'q': f'colony_id:HMGU-HEPD0676_4_E07-1-1 AND parameter_name:"{to_find}"',
@@ -42,19 +38,11 @@ params={
 #'q': f'parameter_name:"{to_find}" AND metadata_group:593a2d0df1def577e4a39c6de7075687 AND zygosity: "homozygote" AND gene_symbol:Ucp1 AND parameter_stable_id:IMPC_CAL_004_001 AND strain_name:"C57BL/6NTac" AND biological_sample_group: "experimental"', # for knockout of specific gene
 #'q': f'metadata_group:593a2d0df1def577e4a39c6de7075687 AND parameter_name:"{to_find}" AND procedure_name:"Indirect Calorimetry"',
 'fl': 'weight,file_type,data_point,external_sample_id,time_point,window_weight,discrete_point,strain_name,metadata_group,parameter_stable_id,gene_symbol',
-'rows': 15000,
+'rows': 15000, # ignored in batch_solr_request
 'wt': 'csv'
 }
 
-
 batch_solr_request(core='experiment', params=params, download=True, batch_size=10000, filename='UCP1_controls_O2')
 
-#print("results:")
-#print(res)
-
-
-#print(num_found)
-#print("the df:")
-#print(df["weight"])
 
 
