@@ -1,6 +1,7 @@
 import pandas as pd
 
 def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
+    """ Convert a data frame from IMPC to TSE v6 format """
     df["Sample"] = df["Sample"].apply(lambda x: str(x).split("-")[-1] if "-" in str(x) else str(x))
 
     samples = list(set(df["Sample"]))
@@ -12,7 +13,6 @@ def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
     unique_ids = [(*uid.split("_"), index) for (index, uid) in enumerate(unique_ids.tolist())]
 
     ko = list(df.loc[df['Condition'].str.contains("KO", na=False), "Sample"])
-
     unique_kos = len(list(set(ko)))
     ko = list(set([f"{k}" for k in ko]))
     wt = list(df.loc[df['Condition'].str.contains("WT", na=False), "Sample"])[:(unique_kos)]
@@ -47,15 +47,3 @@ def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
                 date, time = row["DateTime"].split(" ")
                 weight = str(row['Weight']).replace(".", ",")
                 f.write(f"{date};{time};{row['Sample']};{box};{o2};{co2};{weight}\n")
-                
-
-if __name__ == "__main__":
-    gene_symbol = "Ucp1"
-    df = pd.read_csv(f"results/reformatted/reformatted_calor_{gene_symbol}.csv")
-    convert_to_tse(df, gene_symbol, "test_new2.csv")
-
-    gene_symbol = "Adipoq"
-    df = pd.read_csv(f"results/reformatted/reformatted_calor_{gene_symbol}.csv")
-    convert_to_tse(df, gene_symbol, "test_new3.csv")
-
-

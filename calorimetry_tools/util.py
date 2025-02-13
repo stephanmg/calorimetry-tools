@@ -1,9 +1,43 @@
 from impc_api import solr_request, batch_solr_request
-
-import tempfile
-import json
-import os
+import os, re, json, tempfile
 from types import SimpleNamespace
+
+def map_to_calor(df):
+    """ Map columns of df to CALOR compatible column names """
+    df.rename(columns={"Sample": "Animal No._NA", "CO2": "VCO2(3)_[ml/h]", "O2": "O2(3)_[ml/h]"}, inplace=True)
+    return df
+
+def format_datetime(df):
+    """ Re-format DateTime from YYYY-MM-DD:HH:MM to TSE format DD/MM/YYYY HH:MM """
+    df["DateTime"] = df["DateTime"].apply(lambda s: re.sub("(.*?)-(.*?)-(.*?)\s(.*?):(.*?):.*", r"\3/\2/\1 \4:\5", s))
+    return df
+
+def collect_data(name="CO2", wt_file, ko_file, gene_symbol):
+    """ Collect measurement data from files """
+    df_WT = pd.read_csv(wt_file)
+    df_WT["gene_symbol"] = f"{gene_symbol} WT"
+
+    df_KO = pd.read_csv(ko_file)
+    df_KO["gene_symbol"] = f"{gene_symbol} KO"
+
+    df_both = pd.concat([df_KO, df_WT])
+    df_both = df_both[["external_sample_id", "data_point", "weight", "time_point", "discrete_point", "gene_symbol", "sex"]]
+    df_both.rename(columns={"external_sample_id" : "Sample", "data_point": name, "weight": "Weight", "time_point": "DateTime", "discrete_point": "Time", "gene_symbol": "Condition", "sex": "Sex"}, inplace=True)
+    return df_both
+
+def combine_measurements(df_CO2, df_O2):
+    """ Combine multiple measurements """
+    df_combined = df_CO2.merge(df_O2, on=["DateTime", "Sample"], suffixes=('', '_drop'))
+    df_combined = df_combined.loc[:, ~df_combined.columns.str.endswith('_drop')]
+    return df_combined
+
+def combine_measurements_for_gene_symbol(gene_symbol, base_folder="results/"):
+    """ Finally combine the data frames """
+    df_CO2 = collect_data(name="CO2", wt_file=f"{base_folder}/{gene_symbol}_controls_CO2.csv", ko_file=f"{base_folder}/{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
+    df_O2 = collect_data(name="O2", wt_file=f"{base_folder}/{gene_symbol}_controls_O2.csv", ko_file=f"{base_folder}/{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
+    df_all = combine_measurements(df_CO2, df_O2)
+    df_reformatted = format_datetime(df_all)
+    return df_reformatted
 
 def get_dataset_identifier(gene_symbol, to_find, significance):
     """ Receive an unique identifier for the dataset """
@@ -31,6 +65,7 @@ def get_measurement_for_dataset_with_identifiers(gene_symbol, to_find, biologica
     # the first statistical result available and assume we can construct an unique identifier by the selected return fields
     identifier = SimpleNamespace(**(get_dataset_identifier(gene_symbol, to_find, significance="False")[0]))
 
+    # Consistency check
     assert len(get_dataset_identifier(gene_symbol, to_find, significance="False")) == 1, "Either no or too many experiments found"
     
     # Get shorter name for parameter for ouput to filename
@@ -57,7 +92,6 @@ def get_measurement_for_dataset_with_identifiers(gene_symbol, to_find, biologica
     # For WT negative selection (empty gene symbol, as we have no specific gene knocked out)
     if biological_sample_group == "control":
         params["q"] = params["q"].replace(f'gene_symbol:"{gene_symbol}"', r'-gene_symbol:*')
-        print(params["q"])
 
     # Retrieve dataset, depending on size, the operation might take a while
     batch_solr_request(core='experiment', params=params, download=download, batch_size=batch_size, filename=filename)
@@ -75,9 +109,3 @@ def get_measurements_for_gene_symbol(gene_symbol, which="KO"):
         get_measurement_for_dataset_with_identifiers(gene_symbol, "Oxygen consumption", "control")
 
 
-if __name__ == "__main__":
-    # Ucp1
-    get_measurements_for_gene_symbol("Ucp1")
-
-    # Adipoq
-    get_measurements_for_gene_symbol("Adipoq")
