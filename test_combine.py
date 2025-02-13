@@ -9,8 +9,6 @@ def format_datetime(df):
     df["DateTime"] = df["DateTime"].apply(lambda s: re.sub("(.*?)-(.*?)-(.*?)\s(.*?):(.*?):.*", r"\3/\2/\1 \4:\5", s))
     return df
 
-    
-
 def collect_data(name="CO2", wt_file="UCP1_controls_CO2.csv", ko_file="UCP1_knockouts_CO2.csv", gene_symbol="Ucp1"):
     df_WT = pd.read_csv(wt_file)
     df_WT["gene_symbol"] = f"{gene_symbol} WT"
@@ -24,8 +22,6 @@ def collect_data(name="CO2", wt_file="UCP1_controls_CO2.csv", ko_file="UCP1_knoc
     return df_both
 
 def combine_measurements(df1, df2):
-    print(df1)
-    print(df2)
     df_combined = df_CO2.merge(df_O2, on=["DateTime", "Sample"], suffixes=('', '_drop'))
     df_combined = df_combined.loc[:, ~df_combined.columns.str.endswith('_drop')]
     return df_combined
@@ -33,10 +29,8 @@ def combine_measurements(df1, df2):
 if __name__ == "__main__":
     gene_symbol = "Ucp1"
     gene_symbol = "Adipoq"
-    df_CO2 = collect_data(name="CO2", wt_file=f"{gene_symbol.upper()}_controls_CO2.csv", ko_file=f"{gene_symbol.upper()}_knockouts_CO2.csv", gene_symbol=gene_symbol)
-    print(df_CO2)
-    df_O2 = collect_data(name="O2", wt_file=f"{gene_symbol.upper()}_controls_O2.csv", ko_file=f"{gene_symbol.upper()}_knockouts_CO2.csv", gene_symbol=gene_symbol)
-    print(df_O2)
+    df_CO2 = collect_data(name="CO2", wt_file=f"{gene_symbol}_controls_CO2.csv", ko_file=f"{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
+    df_O2 = collect_data(name="O2", wt_file=f"{gene_symbol}_controls_O2.csv", ko_file=f"{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
     df_all = combine_measurements(df_CO2, df_O2)
     df_reformatted = format_datetime(df_all)
     df_reformatted.to_csv(f"reformatted_calor_{gene_symbol}.csv")
