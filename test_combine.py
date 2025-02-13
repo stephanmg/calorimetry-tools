@@ -21,16 +21,19 @@ def collect_data(name="CO2", wt_file="UCP1_controls_CO2.csv", ko_file="UCP1_knoc
     df_both.rename(columns={"external_sample_id" : "Sample", "data_point": name, "weight": "Weight", "time_point": "DateTime", "discrete_point": "Time", "gene_symbol": "Condition", "sex": "Sex"}, inplace=True)
     return df_both
 
-def combine_measurements(df1, df2):
+def combine_measurements(df_CO2, df_O2):
     df_combined = df_CO2.merge(df_O2, on=["DateTime", "Sample"], suffixes=('', '_drop'))
     df_combined = df_combined.loc[:, ~df_combined.columns.str.endswith('_drop')]
     return df_combined
 
-if __name__ == "__main__":
-    gene_symbol = "Ucp1"
-    gene_symbol = "Adipoq"
-    df_CO2 = collect_data(name="CO2", wt_file=f"{gene_symbol}_controls_CO2.csv", ko_file=f"{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
-    df_O2 = collect_data(name="O2", wt_file=f"{gene_symbol}_controls_O2.csv", ko_file=f"{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
+def combine(gene_symbol, base_folder="results/"):
+    df_CO2 = collect_data(name="CO2", wt_file=f"{base_folder}/{gene_symbol}_controls_CO2.csv", ko_file=f"{base_folder}/{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
+    df_O2 = collect_data(name="O2", wt_file=f"{base_folder}/{gene_symbol}_controls_O2.csv", ko_file=f"{base_folder}/{gene_symbol}_knockouts_CO2.csv", gene_symbol=gene_symbol)
     df_all = combine_measurements(df_CO2, df_O2)
     df_reformatted = format_datetime(df_all)
-    df_reformatted.to_csv(f"reformatted_calor_{gene_symbol}.csv")
+    df_reformatted.to_csv(f"results/reformatted/reformatted_calor_{gene_symbol}.csv")
+
+if __name__ == "__main__":
+    combine("Ucp1")
+    combine("Adipoq")
+
