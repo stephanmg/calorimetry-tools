@@ -6,6 +6,7 @@ The Python IMPC Apache/Solr API [1] is used to build calorimetry data sets from 
 [![Python](https://img.shields.io/badge/Python%3E%3D-3.10.0-6666ff.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-blue)]()
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)]()
+[![Pypi](https://github.com/stephanmg/calorimetry-tools/actions/workflows/pypi.yaml/badge.svg)](https://github.com/stephanmg/calorimetry-tools/actions/workflows/pypi.yaml)
 
 For an example, see `main.py`.
 
