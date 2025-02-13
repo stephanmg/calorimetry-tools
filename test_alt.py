@@ -25,7 +25,7 @@ def get_dataset_identifier(gene_symbol, to_find, significance):
         os.remove(f"{temp_filename}.json")
 
 
-def get_measurement_for_dataset_with_identifiers(gene_symbol, to_find, biological_sample_group, filetype="csv", batch_size=10000, download=True):
+def get_measurement_for_dataset_with_identifiers(gene_symbol, to_find, biological_sample_group, output_folder="results/", filetype="csv", batch_size=10000, download=True):
     """ Retrieve measurement data (O2 or CO2) for a gene symbol and given biological sample group (KO or WT) """
     # Multiple statistical results might be available. The underlying experiment can be identified by any. Thus we can take 
     # the first statistical result available and assume we can construct an unique identifier by the selected return fields
@@ -43,9 +43,9 @@ def get_measurement_for_dataset_with_identifiers(gene_symbol, to_find, biologica
 
     # Get full output filename
     if biological_sample_group == "experimental":
-        filename = f"{gene_symbol}_knockouts_{parameter_name}"
+        filename = f"{output_folder}/{gene_symbol}_knockouts_{parameter_name}"
     if biological_sample_group == "control":
-        filename = f"{gene_symbol}_controls_{parameter_name}"
+        filename = f"{output_folder}/{gene_symbol}_controls_{parameter_name}"
     
     # Create query parameters for Solr
     params={
