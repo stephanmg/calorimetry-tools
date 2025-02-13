@@ -1,4 +1,6 @@
-name: Publish to PyPI
+name: Pypi
+
+on: [push]
 
 jobs:
   publish:
