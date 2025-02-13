@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
     df["Sample"] = df["Sample"].apply(lambda x: str(x).split("-")[-1] if "-" in str(x) else str(x))
 
@@ -13,14 +12,16 @@ def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
     unique_ids = [(*uid.split("_"), index) for (index, uid) in enumerate(unique_ids.tolist())]
 
     ko = list(df.loc[df['Condition'].str.contains("KO", na=False), "Sample"])
+
     unique_kos = len(list(set(ko)))
     ko = list(set([f"{k}" for k in ko]))
-    wt = list(df.loc[df['Condition'].str.contains("WT", na=False), "Sample"])[:unique_kos]
+    wt = list(df.loc[df['Condition'].str.contains("WT", na=False), "Sample"])[:(unique_kos)]
     wt = list(set([f"{w}" for w in wt]))
 
+    # all samples
     selection_of_animal_ids = [sample[0] for sample in unique_ids]
 
-
+    # only a selection based on above
     if use_selection_of_animals:
         selection_of_animal_ids = wt + ko
         filename_out = f"example_selection_{gene_symbol}.csv"
@@ -49,6 +50,12 @@ def convert_to_tse(df, gene_symbol, filename, use_selection_of_animals=True):
                 
 
 if __name__ == "__main__":
-    gene_symbol = "Adipoq"
-    df = pd.read_csv(f"reformatted_calor_{gene_symbol}.csv")
+    gene_symbol = "Ucp1"
+    df = pd.read_csv(f"results/reformatted/reformatted_calor_{gene_symbol}.csv")
     convert_to_tse(df, gene_symbol, "test_new2.csv")
+
+    gene_symbol = "Adipoq"
+    df = pd.read_csv(f"results/reformatted/reformatted_calor_{gene_symbol}.csv")
+    convert_to_tse(df, gene_symbol, "test_new3.csv")
+
+
