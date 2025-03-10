@@ -1,13 +1,12 @@
 import pandas as pd
 
-
 sexes = ["male", "female"]
 conditions = ["WT", "KO"]
 gene_symbol = "Ucp1"
 
-for sex in sexes:
+for index, sex in enumerate(sexes):
     pd_final = pd.DataFrame()
-    for index, condition in enumerate(conditions):
+    for index2, condition in enumerate(conditions):
         # Filter for condition and sex
         df = pd.read_csv("reformatted_calor_Ucp1_new.csv")
 
@@ -18,7 +17,9 @@ for sex in sexes:
         df["Timestamp"] = pd.to_datetime(df["DateTime"])
         df["StartTime"] = df.groupby("Sample")["Timestamp"].transform("min")
         df["TimeDelta"] = df["Timestamp"] - df["StartTime"]
-        df["AlignedTime"] = pd.to_datetime("2000-01-01 18:00") + df["TimeDelta"]
+        # map to dummy DateTime and align with zeitgeber time
+        # IMPC dataset defines < 0 lights off, thus, 0+12 is lights on again in default light cycle
+        df["AlignedTime"] = pd.to_datetime("2000-01-01 12:00") + df["TimeDelta"]
         df["Timebin"] = df["AlignedTime"].dt.floor("10T")
 
         # old (not required)
@@ -42,8 +43,12 @@ for sex in sexes:
         print(mean_trace_time["Time"])
 
         # calculate back to time bin back to Datetime
-        # mean_trace_O2["Timebin"] = mean_trace_O2["Timebin"].dt.strftime("%d/%m/%Y %H:%M")
-        # mean_trace_CO2["Timebin"] = mean_trace_CO2["Timebin"].dt.strftime("%d/%m/%Y %H:%M")
+        mean_trace_O2["Timebin"] = mean_trace_O2["Timebin"].dt.strftime(
+            "%d/%m/%Y %H:%M"
+        )
+        mean_trace_CO2["Timebin"] = mean_trace_CO2["Timebin"].dt.strftime(
+            "%d/%m/%Y %H:%M"
+        )
 
         # final df
         df_final = pd.DataFrame(
@@ -51,7 +56,8 @@ for sex in sexes:
                 "CO2": mean_trace_CO2["CO2"],
                 "O2": mean_trace_O2["O2"],
                 "DateTime": mean_trace_CO2["Timebin"],
-                "Sample": index,
+                "Sample": index * 2 + index2 + 1,
+                # "Sample": f"{condition}{sex}", # also possible but not visually pleasent in CALOR
                 "Sex": sex,
                 "Condition": f"{gene_symbol} {condition}",
                 "Weight": mean_trace_weight["Weight"],
