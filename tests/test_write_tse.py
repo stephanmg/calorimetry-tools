@@ -4,7 +4,7 @@ from calorimetry_tools import *
 
 def count_lines(file_path):
     """Count lines of file"""
-    with open("file_path", "r") as f:
+    with open(file_path, "r") as f:
         return sum(1 for _ in f)
 
 
