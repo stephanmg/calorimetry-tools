@@ -10,7 +10,7 @@ name = "calorimetry_tools"
 version = "0.1.0"
 description = "Calorimetry tools"
 authors = [ { name = "Stephan Grein", email = "stephan.grein@uni-bonn.de" }]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.md"
 requires-python = ">3.10"
 dynamic = ["dependencies"]
