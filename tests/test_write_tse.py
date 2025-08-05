@@ -22,7 +22,8 @@ def test_write_tse():
     )
 
     # convert df to TSE
+    print(f"results/TSE_file_for_{gene_symbol}.csv")
     write_tse(df, gene_symbol, f"results/TSE_file_for_{gene_symbol}.csv")
+    print("there")
 
-    # check lines
     assert count_lines("results/TSE_file_for_{gene_symbol}.csv") == 2386
