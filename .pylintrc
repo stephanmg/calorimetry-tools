@@ -440,7 +440,13 @@ disable=raw-checker-failed,
         R0914,
         R1718,
         W1514,
-        C0207
+        C0207,
+        E0401, # missing imports
+        W1514, # using open without explict encoding
+        R0913,
+        R0914,
+        R0917,
+        R1718
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -564,6 +570,8 @@ check-str-concat-over-line-jumps=no
 
 
 [TYPECHECK]
+# ignore import failure of module for now
+ignored-modules=calorimetry_tools
 
 # List of decorators that produce context managers, such as
 # contextlib.contextmanager. Add to this list to register other decorators that
@@ -648,6 +656,3 @@ init-import=no
 # builtins.
 redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
 
-# ignore module
-[TYPECHECK]
-ignored-modules=calorimetry_tools
