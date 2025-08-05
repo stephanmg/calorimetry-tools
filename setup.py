@@ -15,5 +15,5 @@ def load_requirements(filename):
 setup(
     name="calorimetry_tools",
     version="0.1.0",
-    install_requires=load_requirements("../requirements.txt"),
+    install_requires=load_requirements("requirements.txt"),
 )
