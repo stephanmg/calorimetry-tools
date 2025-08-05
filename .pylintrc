@@ -448,7 +448,7 @@ disable=raw-checker-failed,
         R0917,
         R1718,
         C0103,
-        W0401 # allow wildcard import
+        W0401, # allow wildcard import
         E0602 # false positives
 
 # Enable the message, report, category or checker with the given id(s). You can

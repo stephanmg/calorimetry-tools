@@ -67,7 +67,7 @@ for index, sex in enumerate(sexes):
         )
 
         pd_final = pd.concat([pd_final, df_final])
-    pd_final.to_csv(f"mean_traces_for_{GeneSymbol}_{sex}.csv")
+    pd_final.to_csv(f"mean_traces_for_{gene_symbol}_{sex}.csv")
 
     import seaborn as sns
     import matplotlib.pyplot as plt
