@@ -4,7 +4,8 @@ from setuptools import setup
 
 def load_requirements(filename):
     """Load dependencies from requirements.txt"""
-    with open(filename, "r", encoding="utf-8") as f:
+    filepath = os.path.join(os.path.dirname(__file__), filename)
+    with open(filepath, "r", encoding="utf-8") as f:
         return [
             line.strip()
             for line in f
