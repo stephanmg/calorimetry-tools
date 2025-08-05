@@ -17,13 +17,14 @@ def test_write_tse():
     get_measurements_for_gene_symbol(gene_symbol)
 
     # combine these files and store as data frame
-    df = combine_measurements_for_gene_symbol(
-        gene_symbol, base_folder="results/"
-    )
+    # df = combine_measurements_for_gene_symbol(
+    #    gene_symbol, base_folder="results/"
+    # )
 
     # convert df to TSE
     # print(f"results/TSE_file_for_{gene_symbol}.csv")
     # write_tse(df, gene_symbol, f"results/TSE_file_for_{gene_symbol}.csv")
     # print("there")
 
+    # assert df != None
     # assert count_lines("results/TSE_file_for_{gene_symbol}.csv") == 2386

@@ -1,6 +1,6 @@
 """ Setup calorimetry tools """
-from setuptools import setup
 import os
+from setuptools import setup
 
 
 def load_requirements(filename):
