@@ -1,3 +1,4 @@
+""" Calorimetry tool tests """
 from calorimetry_tools import *
 
 
@@ -9,6 +10,9 @@ def count_lines(file_path):
 
 def test_write_tse():
     """Wrapper to convert from IMPC dataset to a TSE file"""
+    # gene_symbol
+    gene_symbol = "Ucp1"
+
     # saves multiply files with the IMPC Solr API
     get_measurements_for_gene_symbol(gene_symbol)
 

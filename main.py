@@ -1,3 +1,4 @@
+""" Main """
 from calorimetry_tools import *
 
 
@@ -18,5 +19,5 @@ def convert_from_impc_to_tse_file(gene_symbol):
 if __name__ == "__main__":
     gene_symbols = ["Ucp1", "Adipoq"]
 
-    for gene_symbol in gene_symbols:
-        convert_from_impc_to_tse_file(gene_symbol)
+    for gene in gene_symbols:
+        convert_from_impc_to_tse_file(gene)
