@@ -3,7 +3,7 @@ import pandas as pd
 
 sexes = ["male", "female"]
 conditions = ["WT", "KO"]
-GeneSymbol = "Ucp1"
+gene_symbol = "Ucp1"
 
 for index, sex in enumerate(sexes):
     pd_final = pd.DataFrame()

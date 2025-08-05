@@ -1,3 +1,4 @@
+""" Setup calorimetry tools """
 from setuptools import setup
 
 
